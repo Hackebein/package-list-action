@@ -59,6 +59,10 @@
           "type": "string",
           "description": "Path to Target Listing Root"
         },
+        "PackageListingSuffix": {
+          "type": "string",
+          "description": "Suffix to append to the listing package name and ID"
+        },
         "Partition": {
           "type": "string",
           "description": "Partition to use on CI"
