@@ -24,16 +24,7 @@ namespace VRC.PackageManagement.Automation
     // Using Regex is also fast and avoids interop with shlwapi.dll
     public static class ListExtensions
     {
-        public static IOrderedEnumerable<T> OrderByAlphaNumeric<T>(this IEnumerable<T> source, Func<T, string> selector)
-        {
-            int max = source
-                .SelectMany(i => Regex.Matches(selector(i), @"\d+").Cast<Match>().Select(m => (int?)m.Value.Length))
-                .Max() ?? 0;
-
-            return source.OrderBy(i => Regex.Replace(selector(i), @"\d+", m => m.Value.PadLeft(max, '0')));
-        }
-
-        public static IOrderedEnumerable<T> OrderByAlphaNumericDescending<T>(this IEnumerable<T> source, Func<T, string> selector)
+        public static IOrderedEnumerable<T> OrderByVersionDescending<T>(this IEnumerable<T> source, Func<T, string> selector)
         {
             int max = source
                 .SelectMany(i => Regex.Matches(selector(i), @"\d+").Cast<Match>().Select(m => (int?)m.Value.Length))
@@ -289,7 +280,7 @@ namespace VRC.PackageManagement.Automation
 
                 Serilog.Log.Information($"Made listingInfo {JsonConvert.SerializeObject(listingInfo, JsonWriteOptions)}");
 
-                var latestPackages = packages.OrderByAlphaNumericDescending(p => p.Version).DistinctBy(p => p.Id).ToList();
+                var latestPackages = packages.OrderByVersionDescending(p => p.Version).DistinctBy(p => p.Id).ToList();
                 Serilog.Log.Information($"LatestPackages: {JsonConvert.SerializeObject(latestPackages, JsonWriteOptions)}");
                 var formattedPackages = latestPackages.ConvertAll(p => new
                 {
